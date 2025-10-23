@@ -25,7 +25,7 @@ switch (command) {
 
   case '--version':
   case '-v':
-    console.log('Rose v1.0.5 🌹');
+    console.log('Rose v1.0.6 🌹');
     break;
 
   case '--help':

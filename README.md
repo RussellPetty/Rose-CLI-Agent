@@ -6,7 +6,7 @@
 
 - **Natural language to commands**: Type what you want in plain English
 - **Context-aware**: Automatically fetches `--help` docs for mentioned commands
-- **Multi-provider**: Supports OpenAI, Anthropic (Claude), Google (Gemini), and Ollama (local models)
+- **Multi-provider**: Supports OpenAI, Anthropic (Claude), Google (Gemini), xAI (Grok), and Ollama (local models)
 - **Smart integration**: Seamlessly integrates with Zsh and Bash
 - **Cross-platform**: Works on Linux, macOS, and Windows
 
@@ -25,7 +25,7 @@ rose setup
 ```
 
 This will:
-1. Let you choose your AI provider (OpenAI, Anthropic, Google, or Ollama)
+1. Let you choose your AI provider (OpenAI, Anthropic, Google, xAI, or Ollama)
 2. **For Ollama**: Automatically install if not found, and offer curated small models
 3. Securely store your API key (not needed for Ollama)
 4. Generate help documentation for common commands
@@ -86,6 +86,7 @@ Rose stores configuration in `~/.rose-config.json` and help docs in `~/.rose-hel
 - **OpenAI** - GPT-5 Nano
 - **Anthropic** - Claude 4.5 Haiku
 - **Google** - Gemini 2.5 Flash
+- **xAI** - Grok 4 Fast
 - **Ollama** - Any locally installed model (e.g., llama3.2, qwen2.5, mistral)
 
 All cloud providers support 1M+ token context windows for comprehensive help documentation. Ollama runs completely locally for privacy and offline usage.
@@ -120,4 +121,4 @@ MIT
 
 ## 🙏 Acknowledgments
 
-Powered by state-of-the-art language models from OpenAI, Anthropic, Google, and Ollama.
+Powered by state-of-the-art language models from OpenAI, Anthropic, Google, xAI, and Ollama.

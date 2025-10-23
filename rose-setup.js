@@ -83,9 +83,10 @@ async function main() {
   console.log('1. OpenAI (GPT-5 Nano)');
   console.log('2. Anthropic (Claude 4.5 Haiku)');
   console.log('3. Google (Gemini 2.5 Flash)');
-  console.log('4. Ollama (Local models)');
+  console.log('4. xAI (Grok 4 Fast)');
+  console.log('5. Ollama (Local models)');
 
-  const choice = await question('\nEnter 1, 2, 3, or 4: ');
+  const choice = await question('\nEnter 1, 2, 3, 4, or 5: ');
 
   let provider, model, apiKey;
   switch (choice.trim()) {
@@ -102,6 +103,10 @@ async function main() {
       model = 'gemini-2.5-flash';
       break;
     case '4':
+      provider = 'grok';
+      model = 'grok-4-fast';
+      break;
+    case '5':
       provider = 'ollama';
 
       // Check if Ollama is installed

@@ -1,6 +1,6 @@
 {
   "name": "rose-cli",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "AI-powered terminal command assistant - just type :: and let AI generate commands for you",
   "main": "rose-generate.js",
   "bin": {
@@ -28,6 +28,8 @@
     "openai",
     "anthropic",
     "gemini",
+    "grok",
+    "xai",
     "ollama"
   ],
   "author": "Russell Petty",

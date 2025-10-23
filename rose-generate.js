@@ -176,6 +176,35 @@ async function callOllama(apiKey, model, messages) {
   return data.message.content;
 }
 
+async function callGrok(apiKey, model, messages) {
+  // Grok API is OpenAI-compatible
+  const response = await fetch('https://api.x.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature: 0.3,
+      max_tokens: 4000
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || `API error: ${response.status} ${JSON.stringify(data)}`);
+  }
+
+  if (!data.choices || !data.choices[0]) {
+    throw new Error(`Unexpected API response: ${JSON.stringify(data)}`);
+  }
+
+  return data.choices[0].message.content;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const userRequest = args.join(' ');
@@ -248,6 +277,9 @@ Architecture: ${arch}`
         break;
       case 'google':
         result = await callGoogle(config.apiKey, config.model, messages);
+        break;
+      case 'grok':
+        result = await callGrok(config.apiKey, config.model, messages);
         break;
       case 'ollama':
         result = await callOllama(config.apiKey, config.model, messages);
