@@ -1,5 +1,5 @@
 {
-  "name": "terminal-buddy",
+  "name": "rose-cli",
   "version": "2.0.0",
   "description": "AI-powered terminal command assistant - just type :: and let AI generate commands for you",
   "main": "rose-generate.js",
@@ -13,6 +13,7 @@
     "rose-generate.js",
     "rose-setup.js",
     "rose-update.js",
+    "publish.sh",
     "README.md"
   ],
   "scripts": {
@@ -41,10 +42,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RussellPetty/Terminal-Buddy.git"
+    "url": "git+https://github.com/RussellPetty/Rose-CLI-Agent.git"
   },
   "bugs": {
-    "url": "https://github.com/RussellPetty/Terminal-Buddy/issues"
+    "url": "https://github.com/RussellPetty/Rose-CLI-Agent/issues"
   },
-  "homepage": "https://github.com/RussellPetty/Terminal-Buddy#readme"
+  "homepage": "https://github.com/RussellPetty/Rose-CLI-Agent#readme"
 }

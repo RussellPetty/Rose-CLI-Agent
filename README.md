@@ -14,14 +14,18 @@
 
 ## 🚀 Installation
 
+Install using either package name (both are identical):
+
 ```bash
-npm install -g terminal-buddy
+npm install -g termbuddy
 ```
 
-Or use the legacy name:
+Or:
 ```bash
 npm install -g rose-cli
 ```
+
+Both packages provide the same functionality with three command aliases: `terminal-buddy`, `tb`, and `rose`.
 
 ## 📝 Setup
 
@@ -130,6 +134,23 @@ All cloud providers support 1M+ token context windows for comprehensive help doc
 ## 🤝 Contributing
 
 Issues and pull requests welcome!
+
+### Dual Package Publishing
+
+Terminal Buddy is published under two npm package names:
+- **termbuddy** - Primary package name
+- **rose-cli** - Legacy compatibility package
+
+Both packages are kept in sync. When publishing updates:
+```bash
+# Use the automated script
+./publish.sh
+
+# Or manually:
+# 1. Update version in package.json
+# 2. Set name to "termbuddy" and npm publish
+# 3. Set name to "rose-cli" and npm publish
+```
 
 ## 📄 License
 
