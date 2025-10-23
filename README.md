@@ -1,6 +1,8 @@
-# Rose 🌹
+# Terminal Buddy 👤
 
 **AI-powered terminal command assistant** - Just type `::` followed by your request and let AI generate the perfect command for you.
+
+> **Note**: Also available as `rose-cli` for backward compatibility. You can use `terminal-buddy`, `tb`, or `rose` commands interchangeably.
 
 ## ✨ Features
 
@@ -13,6 +15,11 @@
 ## 🚀 Installation
 
 ```bash
+npm install -g terminal-buddy
+```
+
+Or use the legacy name:
+```bash
 npm install -g rose-cli
 ```
 
@@ -21,6 +28,10 @@ npm install -g rose-cli
 Run the setup wizard:
 
 ```bash
+terminal-buddy setup
+# or
+tb setup
+# or (legacy)
 rose setup
 ```
 
@@ -33,7 +44,7 @@ This will:
 
 ### Ollama Auto-Setup
 
-When selecting Ollama, Rose will:
+When selecting Ollama, Terminal Buddy will:
 - Check if Ollama is installed (offers to install if not)
 - Start the Ollama service if not running
 - If no models are installed, present 5 curated small models optimized for command generation:
@@ -51,8 +62,8 @@ When selecting Ollama, Rose will:
 After setup, just type `::` followed by your request in your terminal:
 
 ```bash
-:: update claude
-# Generates: claude update
+:: update system packages
+# Generates: sudo apt update && sudo apt upgrade
 
 :: find all javascript files modified in last 24 hours
 # Generates: find . -name "*.js" -mtime -1
@@ -65,21 +76,25 @@ Press Enter to see the command, then press Enter again to execute it!
 
 ### Direct CLI Usage
 
-You can also use Rose directly:
+You can also use Terminal Buddy directly:
 
 ```bash
-rose update npm packages
-# Outputs: npm update
+terminal-buddy list running docker containers
+# Outputs: docker ps
 
-rose setup      # Run setup wizard
-rose update     # Update Rose to latest version
-rose --help     # Show help
-rose --version  # Show version
+# Or use the shorthand:
+tb find python files
+
+# All commands work:
+terminal-buddy setup    # Run setup wizard
+tb update              # Update Terminal Buddy to latest version
+rose --help            # Show help (legacy command)
+tb --version           # Show version
 ```
 
 ## 🔧 Configuration
 
-Rose stores configuration in `~/.rose-config.json` and help docs in `~/.rose-help.md`.
+Terminal Buddy stores configuration in `~/.rose-config.json` and help docs in `~/.rose-help.md`.
 
 ### Supported AI Providers
 
@@ -93,7 +108,7 @@ All cloud providers support 1M+ token context windows for comprehensive help doc
 
 ## 🌟 How It Works
 
-1. When you mention a command (like `claude`, `git`, `npm`), Rose automatically runs `--help` on it
+1. When you mention a command (like `git`, `docker`, `npm`), Terminal Buddy automatically runs `--help` on it
 2. The full help documentation is sent to your chosen AI provider
 3. The AI generates the appropriate command based on the actual available options
 4. The command appears in your terminal, ready to execute
@@ -107,9 +122,10 @@ All cloud providers support 1M+ token context windows for comprehensive help doc
 
 ## 📦 What's Included
 
-- `rose` - Main CLI command
-- `rose setup` - Interactive setup wizard
-- Shell integration for `::` syntax (Zsh/Bash)
+- `terminal-buddy` / `tb` / `rose` - Main CLI commands
+- `terminal-buddy setup` - Interactive setup wizard
+- `terminal-buddy update` - Self-updating command
+- Shell integration for `::` syntax (Zsh/Bash/Fish)
 
 ## 🤝 Contributing
 

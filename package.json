@@ -1,9 +1,11 @@
 {
-  "name": "rose-cli",
-  "version": "1.0.6",
+  "name": "terminal-buddy",
+  "version": "2.0.0",
   "description": "AI-powered terminal command assistant - just type :: and let AI generate commands for you",
   "main": "rose-generate.js",
   "bin": {
+    "terminal-buddy": "rose",
+    "tb": "rose",
     "rose": "rose"
   },
   "files": [
@@ -39,10 +41,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RussellPetty/Rose-CLI-Agent.git"
+    "url": "git+https://github.com/RussellPetty/Terminal-Buddy.git"
   },
   "bugs": {
-    "url": "https://github.com/RussellPetty/Rose-CLI-Agent/issues"
+    "url": "https://github.com/RussellPetty/Terminal-Buddy/issues"
   },
-  "homepage": "https://github.com/RussellPetty/Rose-CLI-Agent#readme"
+  "homepage": "https://github.com/RussellPetty/Terminal-Buddy#readme"
 }

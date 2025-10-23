@@ -210,14 +210,14 @@ async function main() {
   const userRequest = args.join(' ');
 
   if (!userRequest) {
-    console.error('Usage: rose <your request>');
-    console.error('Run "rose setup" first to configure.');
+    console.error('Usage: terminal-buddy <your request>');
+    console.error('Run "terminal-buddy setup" first to configure.');
     process.exit(1);
   }
 
   // Load config
   if (!fs.existsSync(CONFIG_PATH)) {
-    console.error('Config not found. Run "rose setup" first.');
+    console.error('Config not found. Run "terminal-buddy setup" first.');
     process.exit(1);
   }
 

@@ -25,25 +25,30 @@ switch (command) {
 
   case '--version':
   case '-v':
-    console.log('Rose v1.0.6 🌹');
+    console.log('Terminal Buddy v2.0.0 👤');
     break;
 
   case '--help':
   case '-h':
   case undefined:
     console.log(`
-🌹 Rose - AI-powered terminal command assistant
+👤 Terminal Buddy - AI-powered terminal command assistant
 
 Usage:
-  rose setup              Run initial setup (choose AI provider, enter API key)
-  rose update             Update Rose to the latest version
-  rose <request>          Generate a command from natural language
-  rose --version          Show version
-  rose --help             Show this help
+  terminal-buddy setup    Run initial setup (choose AI provider, enter API key)
+  terminal-buddy update   Update Terminal Buddy to the latest version
+  terminal-buddy <request> Generate a command from natural language
+  tb setup                Shorthand command (same as above)
+  tb <request>            Shorthand for command generation
+
+  Aliases: terminal-buddy, tb, rose (legacy)
+
+  --version               Show version
+  --help                  Show this help
 
 Terminal Integration:
   Type :: followed by your request in your terminal, then press Enter.
-  Example: :: update claude
+  Example: :: update system packages
 
   The command will appear in your terminal buffer - press Enter again to execute.
 `);

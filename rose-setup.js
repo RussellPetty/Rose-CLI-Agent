@@ -76,7 +76,7 @@ function questionSecret(prompt) {
 }
 
 async function main() {
-  console.log('🌹 Rose Setup\n');
+  console.log('👤 Terminal Buddy Setup\n');
 
   // Choose provider
   console.log('Choose your AI provider:');
@@ -380,10 +380,10 @@ async function main() {
   }
 
   if (shellConfigFile) {
-    console.log(`Adding Rose integration to ${shellConfigFile}...`);
+    console.log(`Adding Terminal Buddy integration to ${shellConfigFile}...`);
 
     const integration = `
-# Rose - AI terminal assistant integration
+# Terminal Buddy - AI terminal assistant integration
 function rose-command() {
     local text="$BUFFER"
     if [[ $text == ::* ]]; then
@@ -419,15 +419,15 @@ bindkey '^M' rose-command  # Bind to Enter key
     if (fs.existsSync(shellConfigFile)) {
       const currentConfig = fs.readFileSync(shellConfigFile, 'utf8');
       if (currentConfig.includes('rose-command')) {
-        console.log('✓ Rose integration already exists in your shell config');
+        console.log('✓ Terminal Buddy integration already exists in your shell config');
       } else {
         fs.appendFileSync(shellConfigFile, integration);
-        console.log(`✅ Rose integration added to ${shellConfigFile}`);
+        console.log(`✅ Terminal Buddy integration added to ${shellConfigFile}`);
         configUpdated = true;
       }
     } else {
       fs.writeFileSync(shellConfigFile, integration);
-      console.log(`✅ Created ${shellConfigFile} with Rose integration`);
+      console.log(`✅ Created ${shellConfigFile} with Terminal Buddy integration`);
       configUpdated = true;
     }
 
@@ -444,23 +444,23 @@ bindkey '^M' rose-command  # Bind to Enter key
         try {
           await execAsync(reloadCmd);
           console.log('✅ Configuration reloaded!');
-          console.log('Rose is now active in your current shell.');
+          console.log('Terminal Buddy is now active in your current shell.');
         } catch (e) {
           console.log(`⚠️  Couldn't auto-reload. Please run: source ${shellConfigFile}`);
           console.log('   Or restart your terminal.');
         }
       } else {
-        console.log(`⚠️  Please restart your terminal to activate Rose.`);
+        console.log(`⚠️  Please restart your terminal to activate Terminal Buddy.`);
       }
     }
   }
 
-  console.log('\n🎉 Setup complete! You can now use Rose\n');
+  console.log('\n🎉 Setup complete! You can now use Terminal Buddy\n');
   console.log('Usage:');
   console.log('  1. In your terminal, type :: followed by your request');
   console.log('  2. Press Enter and wait for the command to appear');
   console.log('  3. Press Enter again to execute\n');
-  console.log('Example: :: update claude\n');
+  console.log('Example: :: list docker containers\n');
 
   rl.close();
 }

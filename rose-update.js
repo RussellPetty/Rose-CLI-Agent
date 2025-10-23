@@ -8,7 +8,7 @@ const path = require('path');
 const execAsync = promisify(exec);
 
 async function main() {
-  console.log('🌹 Rose Update\n');
+  console.log('👤 Terminal Buddy Update\n');
 
   try {
     // Get current version
@@ -20,35 +20,35 @@ async function main() {
 
     // Check for latest version from npm
     console.log('\nChecking for updates...');
-    const { stdout: latestVersionOutput } = await execAsync('npm view rose-cli version');
+    const { stdout: latestVersionOutput } = await execAsync('npm view terminal-buddy version');
     const latestVersion = latestVersionOutput.trim();
 
     console.log(`Latest version: ${latestVersion}`);
 
     if (currentVersion === latestVersion) {
-      console.log('\n✅ Rose is already up to date!');
+      console.log('\n✅ Terminal Buddy is already up to date!');
       return;
     }
 
-    console.log('\n📦 Updating Rose to the latest version...');
+    console.log('\n📦 Updating Terminal Buddy to the latest version...');
 
     // Run npm update globally
-    const { stdout, stderr } = await execAsync('npm update -g rose-cli');
+    const { stdout, stderr } = await execAsync('npm update -g terminal-buddy');
 
     if (stderr && !stderr.includes('npm WARN')) {
       console.error('\nError during update:', stderr);
       process.exit(1);
     }
 
-    console.log('\n✅ Rose has been updated successfully!');
+    console.log('\n✅ Terminal Buddy has been updated successfully!');
     console.log(`\nUpdated from ${currentVersion} to ${latestVersion}`);
-    console.log('\nRun "rose --version" to verify the new version.');
+    console.log('\nRun "terminal-buddy --version" to verify the new version.');
 
   } catch (error) {
     if (error.message.includes('EACCES') || error.message.includes('permission denied')) {
       console.error('\n❌ Permission denied. Try running with sudo:');
-      console.error('   sudo rose update');
-    } else if (error.message.includes('rose-cli')) {
+      console.error('   sudo terminal-buddy update');
+    } else if (error.message.includes('terminal-buddy')) {
       console.error('\n❌ Could not fetch latest version from npm.');
       console.error('Please check your internet connection and try again.');
     } else {
