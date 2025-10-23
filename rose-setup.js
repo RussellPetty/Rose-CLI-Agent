@@ -21,6 +21,51 @@ function question(prompt) {
   return new Promise(resolve => rl.question(prompt, resolve));
 }
 
+function questionSecret(prompt) {
+  return new Promise((resolve) => {
+    const stdin = process.stdin;
+    const onData = (char) => {
+      char = char.toString();
+      switch (char) {
+        case '\n':
+        case '\r':
+        case '\u0004':
+          stdin.setRawMode(false);
+          stdin.pause();
+          stdin.removeListener('data', onData);
+          process.stdout.write('\n');
+          resolve(hidden);
+          break;
+        case '\u0003':
+          process.exit();
+          break;
+        case '\u007f': // Backspace
+          hidden = hidden.slice(0, -1);
+          process.stdout.clearLine();
+          process.stdout.cursorTo(0);
+          process.stdout.write(prompt);
+          // Show only last 4 chars
+          if (hidden.length > 4) {
+            process.stdout.write('*'.repeat(hidden.length - 4) + hidden.slice(-4));
+          } else {
+            process.stdout.write(hidden);
+          }
+          break;
+        default:
+          hidden += char;
+          process.stdout.write(hidden.length <= 4 ? char : '*');
+          break;
+      }
+    };
+
+    let hidden = '';
+    process.stdout.write(prompt);
+    stdin.resume();
+    stdin.setRawMode(true);
+    stdin.on('data', onData);
+  });
+}
+
 async function main() {
   console.log('🌹 Rose Setup\n');
 
@@ -40,7 +85,7 @@ async function main() {
       break;
     case '2':
       provider = 'anthropic';
-      model = 'claude-4-5-haiku';
+      model = 'claude-haiku-4-5';
       break;
     case '3':
       provider = 'google';
@@ -53,7 +98,7 @@ async function main() {
   }
 
   // Get API key
-  const apiKey = await question(`\nEnter your ${provider.toUpperCase()} API key: `);
+  const apiKey = await questionSecret(`\nEnter your ${provider.toUpperCase()} API key: `);
 
   // Save config
   const config = { provider, model, apiKey: apiKey.trim() };
@@ -103,10 +148,20 @@ async function main() {
 
   if (shell.includes('zsh')) {
     shellName = 'Zsh';
-    shellConfigFile = path.join(os.homedir(), '.zshrc');
+    // Check for ZDOTDIR first (common in custom zsh setups)
+    const zdotdir = process.env.ZDOTDIR;
+    if (zdotdir) {
+      shellConfigFile = path.join(zdotdir, '.zshrc');
+      console.log(`Detected ZDOTDIR: ${zdotdir}`);
+    } else {
+      shellConfigFile = path.join(os.homedir(), '.zshrc');
+    }
   } else if (shell.includes('bash')) {
     shellName = 'Bash';
     shellConfigFile = path.join(os.homedir(), '.bashrc');
+  } else if (shell.includes('fish')) {
+    shellName = 'Fish';
+    shellConfigFile = path.join(os.homedir(), '.config', 'fish', 'config.fish');
   } else {
     console.log(`Detected shell: ${shell || 'unknown'}`);
     console.log('Manual integration required. See documentation.\n');
@@ -149,6 +204,7 @@ bindkey '^M' rose-command  # Bind to Enter key
 `;
 
       // Check if already added
+      let configUpdated = false;
       if (fs.existsSync(shellConfigFile)) {
         const currentConfig = fs.readFileSync(shellConfigFile, 'utf8');
         if (currentConfig.includes('rose-command')) {
@@ -156,11 +212,35 @@ bindkey '^M' rose-command  # Bind to Enter key
         } else {
           fs.appendFileSync(shellConfigFile, integration);
           console.log(`✅ Rose integration added to ${shellConfigFile}`);
-          console.log(`\nRun: source ${shellConfigFile}`);
+          configUpdated = true;
         }
       } else {
         fs.writeFileSync(shellConfigFile, integration);
         console.log(`✅ Created ${shellConfigFile} with Rose integration`);
+        configUpdated = true;
+      }
+
+      // Attempt to reload config
+      if (configUpdated) {
+        console.log('\n🔄 Reloading shell configuration...');
+        const reloadCmd = shell.includes('zsh')
+          ? `zsh -c "source ${shellConfigFile}"`
+          : shell.includes('bash')
+          ? `bash -c "source ${shellConfigFile}"`
+          : null;
+
+        if (reloadCmd) {
+          try {
+            await execAsync(reloadCmd);
+            console.log('✅ Configuration reloaded!');
+            console.log('Rose is now active in your current shell.');
+          } catch (e) {
+            console.log(`⚠️  Couldn't auto-reload. Please run: source ${shellConfigFile}`);
+            console.log('   Or restart your terminal.');
+          }
+        } else {
+          console.log(`⚠️  Please restart your terminal to activate Rose.`);
+        }
       }
     }
   }
