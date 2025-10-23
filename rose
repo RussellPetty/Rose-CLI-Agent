@@ -25,7 +25,7 @@ switch (command) {
 
   case '--version':
   case '-v':
-    console.log('Terminal Buddy v2.1.0 👤');
+    console.log('Terminal Buddy v2.1.1 👤');
     break;
 
   case '--help':

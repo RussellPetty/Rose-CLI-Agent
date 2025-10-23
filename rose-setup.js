@@ -483,7 +483,33 @@ bindkey '^M' rose-command  # Bind to Enter key
     if (fs.existsSync(shellConfigFile)) {
       const currentConfig = fs.readFileSync(shellConfigFile, 'utf8');
       if (currentConfig.includes('rose-command')) {
-        console.log('✓ Terminal Buddy integration already exists in your shell config');
+        // Check if it's the old version without ::: support
+        if (!currentConfig.includes('History search mode (:::)')) {
+          console.log('⚠️  Found old Terminal Buddy integration without history support');
+          const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+          });
+
+          const answer = await new Promise(resolve => {
+            rl.question('Update to latest version with ::: history feature? (y/n): ', resolve);
+          });
+          rl.close();
+
+          if (answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes') {
+            // Remove old integration
+            const oldIntegrationPattern = /# (Rose|Terminal Buddy) - AI terminal assistant integration[\s\S]*?bindkey '\^M' rose-command.*?\n/;
+            const updatedConfig = currentConfig.replace(oldIntegrationPattern, '');
+            fs.writeFileSync(shellConfigFile, updatedConfig + integration);
+            console.log(`✅ Updated Terminal Buddy integration in ${shellConfigFile}`);
+            console.log('   Now supports ::: for command history!');
+            configUpdated = true;
+          } else {
+            console.log('Keeping existing integration');
+          }
+        } else {
+          console.log('✓ Terminal Buddy integration already exists in your shell config (latest version)');
+        }
       } else {
         fs.appendFileSync(shellConfigFile, integration);
         console.log(`✅ Terminal Buddy integration added to ${shellConfigFile}`);
