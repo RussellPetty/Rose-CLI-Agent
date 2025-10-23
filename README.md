@@ -103,7 +103,3 @@ MIT
 ## 🙏 Acknowledgments
 
 Powered by state-of-the-art language models from OpenAI, Anthropic, and Google.
-
----
-
-Made with ❤️ for developers who love efficient workflows
