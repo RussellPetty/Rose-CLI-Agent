@@ -15,6 +15,8 @@
 
 ## 🚀 Installation
 
+### NPM (Recommended)
+
 Install using either package name (both are identical):
 
 ```bash
@@ -27,6 +29,23 @@ npm install -g rose-cli
 ```
 
 Both packages provide the same functionality with three command aliases: `termbuddy`, `tb`, and `rose`.
+
+### Arch Linux (AUR)
+
+```bash
+yay -S termbuddy
+# or
+paru -S termbuddy
+```
+
+### Homebrew (macOS/Linux)
+
+```bash
+brew tap RussellPetty/termbuddy
+brew install termbuddy
+```
+
+> **Note:** AUR and Homebrew packages are community-maintained. See [PACKAGING.md](PACKAGING.md) for maintainer information.
 
 ## 📝 Setup
 

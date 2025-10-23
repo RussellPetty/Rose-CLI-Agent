@@ -1,0 +1,14 @@
+pkgbase = termbuddy
+	pkgdesc = AI-powered terminal command assistant - type :: to generate commands or ::: to browse history
+	pkgver = 2.1.0
+	pkgrel = 1
+	url = https://github.com/RussellPetty/Rose-CLI-Agent
+	arch = any
+	license = MIT
+	depends = nodejs
+	optdepends = fzf: fuzzy finder for command history
+	noextract = termbuddy-2.1.0.tgz
+	source = https://registry.npmjs.org/termbuddy/-/termbuddy-2.1.0.tgz
+	sha256sums = SKIP
+
+pkgname = termbuddy
