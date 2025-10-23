@@ -10,6 +10,7 @@
     "rose",
     "rose-generate.js",
     "rose-setup.js",
+    "rose-update.js",
     "README.md"
   ],
   "scripts": {
@@ -26,7 +27,8 @@
     "llm",
     "openai",
     "anthropic",
-    "gemini"
+    "gemini",
+    "ollama"
   ],
   "author": "Russell Petty",
   "license": "MIT",

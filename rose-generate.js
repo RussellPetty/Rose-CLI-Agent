@@ -139,6 +139,43 @@ async function callGoogle(apiKey, model, messages) {
   throw new Error(`Cannot extract text from response: ${JSON.stringify(data)}`);
 }
 
+async function callOllama(apiKey, model, messages) {
+  // Convert messages to Ollama format
+  const systemMsg = messages.find(m => m.role === 'system');
+  const userMessages = messages.filter(m => m.role !== 'system');
+
+  const response = await fetch('http://localhost:11434/api/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        ...(systemMsg ? [{ role: 'system', content: systemMsg.content }] : []),
+        ...userMessages
+      ],
+      stream: false,
+      options: {
+        temperature: 0.3,
+        num_predict: 4000
+      }
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || `Ollama API error: ${response.status} ${JSON.stringify(data)}`);
+  }
+
+  if (!data.message || !data.message.content) {
+    throw new Error(`Unexpected Ollama response: ${JSON.stringify(data)}`);
+  }
+
+  return data.message.content;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const userRequest = args.join(' ');
@@ -211,6 +248,9 @@ Architecture: ${arch}`
         break;
       case 'google':
         result = await callGoogle(config.apiKey, config.model, messages);
+        break;
+      case 'ollama':
+        result = await callOllama(config.apiKey, config.model, messages);
         break;
       default:
         throw new Error(`Unknown provider: ${config.provider}`);

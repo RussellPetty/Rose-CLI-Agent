@@ -83,10 +83,11 @@ async function main() {
   console.log('1. OpenAI (GPT-5 Nano)');
   console.log('2. Anthropic (Claude 4.5 Haiku)');
   console.log('3. Google (Gemini 2.5 Flash)');
+  console.log('4. Ollama (Local models)');
 
-  const choice = await question('\nEnter 1, 2, or 3: ');
+  const choice = await question('\nEnter 1, 2, 3, or 4: ');
 
-  let provider, model;
+  let provider, model, apiKey;
   switch (choice.trim()) {
     case '1':
       provider = 'openai';
@@ -100,14 +101,167 @@ async function main() {
       provider = 'google';
       model = 'gemini-2.5-flash';
       break;
+    case '4':
+      provider = 'ollama';
+
+      // Check if Ollama is installed
+      console.log('\nChecking Ollama installation...');
+      try {
+        await execAsync('which ollama');
+        console.log('✓ Ollama is installed');
+      } catch (error) {
+        console.log('✗ Ollama is not installed');
+        const installChoice = await question('\nWould you like to install Ollama now? (y/n): ');
+
+        if (installChoice.toLowerCase() !== 'y') {
+          console.log('\nOllama is required for this option.');
+          console.log('Visit https://ollama.ai to install manually.');
+          rl.close();
+          process.exit(0);
+        }
+
+        console.log('\n📦 Installing Ollama...');
+        try {
+          // Install Ollama using the official installation script
+          await execAsync('curl -fsSL https://ollama.ai/install.sh | sh', {
+            stdio: 'inherit'
+          });
+          console.log('\n✅ Ollama installed successfully!');
+
+          // Start Ollama service
+          console.log('🚀 Starting Ollama service...');
+          await execAsync('ollama serve > /dev/null 2>&1 &');
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for service to start
+        } catch (installError) {
+          console.error('\n❌ Failed to install Ollama:', installError.message);
+          console.error('Please install manually from https://ollama.ai');
+          rl.close();
+          process.exit(1);
+        }
+      }
+
+      // Check if Ollama is running
+      console.log('\nConnecting to Ollama...');
+      let isRunning = false;
+      try {
+        const response = await fetch('http://localhost:11434/api/tags');
+        isRunning = response.ok;
+      } catch (e) {
+        isRunning = false;
+      }
+
+      if (!isRunning) {
+        console.log('⚠️  Ollama service is not running. Starting it...');
+        try {
+          exec('ollama serve > /dev/null 2>&1 &');
+          await new Promise(resolve => setTimeout(resolve, 3000));
+        } catch (e) {
+          console.error('❌ Could not start Ollama service');
+          console.error('Please run: ollama serve');
+          rl.close();
+          process.exit(1);
+        }
+      }
+
+      // Fetch available models from Ollama
+      console.log('Fetching available models...');
+      try {
+        const response = await fetch('http://localhost:11434/api/tags');
+        if (!response.ok) {
+          throw new Error(`Ollama API returned status ${response.status}`);
+        }
+        const data = await response.json();
+
+        if (!data.models || data.models.length === 0) {
+          // No models installed - offer curated list
+          console.log('\n📚 No models found. Let\'s install one!');
+          console.log('\nRecommended small models for command generation:');
+
+          const recommendedModels = [
+            { name: 'qwen2.5:0.5b', size: '397 MB', description: 'Smallest, fastest (0.5B params)' },
+            { name: 'qwen2.5-coder:1.5b', size: '1.0 GB', description: 'Code-focused, very fast (1.5B params)' },
+            { name: 'llama3.2:1b', size: '1.3 GB', description: 'Balanced quality/speed (1B params)' },
+            { name: 'qwen2.5:3b', size: '1.9 GB', description: 'Better accuracy (3B params)' },
+            { name: 'llama3.2:3b', size: '2.0 GB', description: 'High quality (3B params)' }
+          ];
+
+          recommendedModels.forEach((m, i) => {
+            console.log(`${i + 1}. ${m.name.padEnd(25)} (${m.size}) - ${m.description}`);
+          });
+
+          const modelChoice = await question('\nSelect a model to install (1-5): ');
+          const modelIndex = parseInt(modelChoice.trim()) - 1;
+
+          if (modelIndex < 0 || modelIndex >= recommendedModels.length) {
+            console.error('Invalid choice');
+            rl.close();
+            process.exit(1);
+          }
+
+          model = recommendedModels[modelIndex].name;
+
+          console.log(`\n📥 Downloading ${model}...`);
+          console.log('This may take a few minutes depending on your connection.\n');
+
+          // Pull the model with progress
+          const pullProcess = exec(`ollama pull ${model}`);
+
+          pullProcess.stdout.on('data', (data) => {
+            process.stdout.write(data);
+          });
+
+          pullProcess.stderr.on('data', (data) => {
+            process.stderr.write(data);
+          });
+
+          await new Promise((resolve, reject) => {
+            pullProcess.on('exit', (code) => {
+              if (code === 0) {
+                resolve();
+              } else {
+                reject(new Error(`Model download failed with code ${code}`));
+              }
+            });
+          });
+
+          console.log(`\n✅ Model ${model} installed successfully!`);
+          apiKey = 'local';
+        } else {
+          // Models available - show list
+          console.log('\n✓ Available models:');
+          data.models.forEach((m, i) => {
+            console.log(`${i + 1}. ${m.name}`);
+          });
+
+          const modelChoice = await question('\nEnter model number: ');
+          const modelIndex = parseInt(modelChoice.trim()) - 1;
+
+          if (modelIndex < 0 || modelIndex >= data.models.length) {
+            console.error('Invalid model choice');
+            rl.close();
+            process.exit(1);
+          }
+
+          model = data.models[modelIndex].name;
+          apiKey = 'local';
+          console.log(`\nSelected model: ${model}`);
+        }
+      } catch (error) {
+        console.error(`\n❌ Error: ${error.message}`);
+        rl.close();
+        process.exit(1);
+      }
+      break;
     default:
       console.error('Invalid choice');
       rl.close();
       process.exit(1);
   }
 
-  // Get API key
-  const apiKey = await questionSecret(`\nEnter your ${provider.toUpperCase()} API key: `);
+  // Get API key (skip for Ollama)
+  if (provider !== 'ollama') {
+    apiKey = await questionSecret(`\nEnter your ${provider.toUpperCase()} API key: `);
+  }
 
   // Save config
   const config = { provider, model, apiKey: apiKey.trim() };

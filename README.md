@@ -6,7 +6,7 @@
 
 - **Natural language to commands**: Type what you want in plain English
 - **Context-aware**: Automatically fetches `--help` docs for mentioned commands
-- **Multi-provider**: Supports OpenAI, Anthropic (Claude), and Google (Gemini)
+- **Multi-provider**: Supports OpenAI, Anthropic (Claude), Google (Gemini), and Ollama (local models)
 - **Smart integration**: Seamlessly integrates with Zsh and Bash
 - **Cross-platform**: Works on Linux, macOS, and Windows
 
@@ -25,10 +25,24 @@ rose setup
 ```
 
 This will:
-1. Let you choose your AI provider (OpenAI, Anthropic, or Google)
-2. Securely store your API key
-3. Generate help documentation for common commands
-4. Automatically add shell integration to your `.zshrc` or `.bashrc`
+1. Let you choose your AI provider (OpenAI, Anthropic, Google, or Ollama)
+2. **For Ollama**: Automatically install if not found, and offer curated small models
+3. Securely store your API key (not needed for Ollama)
+4. Generate help documentation for common commands
+5. Automatically add shell integration to your `.zshrc` or `.bashrc`
+
+### Ollama Auto-Setup
+
+When selecting Ollama, Rose will:
+- Check if Ollama is installed (offers to install if not)
+- Start the Ollama service if not running
+- If no models are installed, present 5 curated small models optimized for command generation:
+  - `qwen2.5:0.5b` (397 MB) - Smallest, fastest
+  - `qwen2.5-coder:1.5b` (1.0 GB) - Code-focused, very fast
+  - `llama3.2:1b` (1.3 GB) - Balanced quality/speed
+  - `qwen2.5:3b` (1.9 GB) - Better accuracy
+  - `llama3.2:3b` (2.0 GB) - High quality
+- Download your chosen model with real-time progress display
 
 ## 💡 Usage
 
@@ -57,6 +71,8 @@ You can also use Rose directly:
 rose update npm packages
 # Outputs: npm update
 
+rose setup      # Run setup wizard
+rose update     # Update Rose to latest version
 rose --help     # Show help
 rose --version  # Show version
 ```
@@ -70,8 +86,9 @@ Rose stores configuration in `~/.rose-config.json` and help docs in `~/.rose-hel
 - **OpenAI** - GPT-5 Nano
 - **Anthropic** - Claude 4.5 Haiku
 - **Google** - Gemini 2.5 Flash
+- **Ollama** - Any locally installed model (e.g., llama3.2, qwen2.5, mistral)
 
-All providers support 1M+ token context windows for comprehensive help documentation.
+All cloud providers support 1M+ token context windows for comprehensive help documentation. Ollama runs completely locally for privacy and offline usage.
 
 ## 🌟 How It Works
 
@@ -85,6 +102,7 @@ All providers support 1M+ token context windows for comprehensive help documenta
 - API keys are stored locally in `~/.rose-config.json` with restricted permissions (600)
 - No data is sent anywhere except to your chosen AI provider
 - All processing happens on your machine
+- **Ollama option**: Keep everything 100% local - no API keys, no cloud services required
 
 ## 📦 What's Included
 
@@ -102,4 +120,4 @@ MIT
 
 ## 🙏 Acknowledgments
 
-Powered by state-of-the-art language models from OpenAI, Anthropic, and Google.
+Powered by state-of-the-art language models from OpenAI, Anthropic, Google, and Ollama.

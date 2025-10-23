@@ -15,6 +15,14 @@ switch (command) {
     setup.on('exit', code => process.exit(code));
     break;
 
+  case 'update':
+    // Run update
+    const update = spawn('node', [path.join(__dirname, 'rose-update.js'), ...args], {
+      stdio: 'inherit'
+    });
+    update.on('exit', code => process.exit(code));
+    break;
+
   case '--version':
   case '-v':
     console.log('Rose v1.0.0 🌹');
@@ -28,6 +36,7 @@ switch (command) {
 
 Usage:
   rose setup              Run initial setup (choose AI provider, enter API key)
+  rose update             Update Rose to the latest version
   rose <request>          Generate a command from natural language
   rose --version          Show version
   rose --help             Show this help
