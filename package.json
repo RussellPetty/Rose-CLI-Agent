@@ -1,0 +1,38 @@
+{
+  "name": "rose-cli",
+  "version": "1.0.0",
+  "description": "AI-powered terminal command assistant - just type :: and let AI generate commands for you",
+  "main": "rose-generate.js",
+  "bin": {
+    "rose": "./rose"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ai",
+    "terminal",
+    "cli",
+    "assistant",
+    "command",
+    "shell",
+    "automation",
+    "llm",
+    "openai",
+    "anthropic",
+    "gemini"
+  ],
+  "author": "Russell Petty",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RussellPetty/Rose-CLI-Agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RussellPetty/Rose-CLI-Agent/issues"
+  },
+  "homepage": "https://github.com/RussellPetty/Rose-CLI-Agent#readme"
+}

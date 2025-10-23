@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+
+const { spawn } = require('child_process');
+const path = require('path');
+
+const command = process.argv[2];
+const args = process.argv.slice(3);
+
+switch (command) {
+  case 'setup':
+    // Run setup
+    const setup = spawn('node', [path.join(__dirname, 'rose-setup.js'), ...args], {
+      stdio: 'inherit'
+    });
+    setup.on('exit', code => process.exit(code));
+    break;
+
+  case '--version':
+  case '-v':
+    console.log('Rose v1.0.0 🌹');
+    break;
+
+  case '--help':
+  case '-h':
+  case undefined:
+    console.log(`
+🌹 Rose - AI-powered terminal command assistant
+
+Usage:
+  rose setup              Run initial setup (choose AI provider, enter API key)
+  rose <request>          Generate a command from natural language
+  rose --version          Show version
+  rose --help             Show this help
+
+Terminal Integration:
+  Type :: followed by your request in your terminal, then press Enter.
+  Example: :: update claude
+
+  The command will appear in your terminal buffer - press Enter again to execute.
+`);
+    break;
+
+  default:
+    // Generate command from natural language
+    const generator = spawn('node', [path.join(__dirname, 'rose-generate.js'), ...process.argv.slice(2)], {
+      stdio: 'inherit'
+    });
+    generator.on('exit', code => process.exit(code));
+    break;
+}
