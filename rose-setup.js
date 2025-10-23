@@ -386,6 +386,70 @@ async function main() {
 # Terminal Buddy - AI terminal assistant integration
 function rose-command() {
     local text="$BUFFER"
+
+    # History search mode (:::)
+    if [[ $text == :::* ]]; then
+        local filter="\${text#:::}"
+        filter="\${filter# }" # Remove leading space
+
+        # Get history commands
+        local history_commands
+        if command -v node >/dev/null 2>&1; then
+            local rose_history_script="$(dirname "$(which rose 2>/dev/null || which tb 2>/dev/null)")/rose-history.js"
+
+            if [[ -f "$rose_history_script" ]]; then
+                if [[ -n "$filter" ]]; then
+                    history_commands=$(ROSE_HISTORY_MODE=interactive node "$rose_history_script" "$filter" 2>/dev/null)
+                else
+                    history_commands=$(ROSE_HISTORY_MODE=interactive node "$rose_history_script" 2>/dev/null)
+                fi
+
+                if [[ -n "$history_commands" ]]; then
+                    # Use fzf if available, otherwise use numbered list
+                    if command -v fzf >/dev/null 2>&1; then
+                        local selected=$(echo "$history_commands" | fzf --height=40% --reverse --prompt="Select command: " | cut -f1)
+                        if [[ -n "$selected" ]]; then
+                            BUFFER="$selected"
+                            CURSOR=$#BUFFER
+                        else
+                            BUFFER=""
+                        fi
+                    else
+                        # Simple numbered selection
+                        echo
+                        echo "$history_commands" | nl -w2 -s'. '
+                        echo
+                        echo -n "Select command number (or Enter to cancel): "
+                        read selection
+                        if [[ "$selection" =~ ^[0-9]+$ ]]; then
+                            local selected=$(echo "$history_commands" | sed -n "\${selection}p" | cut -f1)
+                            if [[ -n "$selected" ]]; then
+                                BUFFER="$selected"
+                                CURSOR=$#BUFFER
+                            else
+                                BUFFER=""
+                            fi
+                        else
+                            BUFFER=""
+                        fi
+                    fi
+                else
+                    echo "No history found for this directory"
+                    BUFFER=""
+                fi
+            else
+                echo "History script not found"
+                BUFFER=""
+            fi
+        else
+            echo "Node.js not found"
+            BUFFER=""
+        fi
+        zle reset-prompt
+        return
+    fi
+
+    # AI command generation mode (::)
     if [[ $text == ::* ]]; then
         text="\${text#::}"
         text="\${text# }" # Remove leading space

@@ -59,12 +59,12 @@ async function main() {
 
     console.log('\n✅ Terminal Buddy has been updated successfully!');
     console.log(`\nUpdated from ${currentVersion} to ${latestVersion}`);
-    console.log('\nRun "terminal-buddy --version" to verify the new version.');
+    console.log('\nRun "termbuddy --version" to verify the new version.');
 
   } catch (error) {
     if (error.message.includes('EACCES') || error.message.includes('permission denied')) {
       console.error('\n❌ Permission denied. Try running with sudo:');
-      console.error('   sudo terminal-buddy update');
+      console.error('   sudo termbuddy update');
       console.error('   or: sudo tb update');
     } else if (error.message.includes('termbuddy') || error.message.includes('rose-cli')) {
       console.error('\n❌ Could not fetch latest version from npm.');

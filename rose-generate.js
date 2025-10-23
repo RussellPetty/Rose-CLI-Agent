@@ -10,6 +10,7 @@ const execAsync = promisify(exec);
 
 const CONFIG_PATH = path.join(os.homedir(), '.rose-config.json');
 const HELP_PATH = path.join(os.homedir(), '.rose-help.md');
+const HISTORY_PATH = path.join(os.homedir(), '.rose-history.json');
 
 function getSystemPrompt(shell, system) {
   return `You are a command-generation assistant.
@@ -205,19 +206,56 @@ async function callGrok(apiKey, model, messages) {
   return data.choices[0].message.content;
 }
 
+function saveToHistory(userRequest, command, currentPath) {
+  try {
+    let history = { commands: [] };
+
+    // Load existing history
+    if (fs.existsSync(HISTORY_PATH)) {
+      try {
+        history = JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf8'));
+        if (!Array.isArray(history.commands)) {
+          history.commands = [];
+        }
+      } catch (e) {
+        // If history file is corrupted, start fresh
+        history = { commands: [] };
+      }
+    }
+
+    // Add new command
+    history.commands.push({
+      path: currentPath,
+      request: userRequest,
+      command: command,
+      timestamp: Date.now()
+    });
+
+    // Keep only last 500 commands
+    if (history.commands.length > 500) {
+      history.commands = history.commands.slice(-500);
+    }
+
+    // Save history
+    fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2), { mode: 0o600 });
+  } catch (e) {
+    // Silent fail - don't break command generation if history save fails
+  }
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const userRequest = args.join(' ');
 
   if (!userRequest) {
-    console.error('Usage: terminal-buddy <your request>');
-    console.error('Run "terminal-buddy setup" first to configure.');
+    console.error('Usage: termbuddy <your request>');
+    console.error('Run "termbuddy setup" first to configure.');
     process.exit(1);
   }
 
   // Load config
   if (!fs.existsSync(CONFIG_PATH)) {
-    console.error('Config not found. Run "terminal-buddy setup" first.');
+    console.error('Config not found. Run "termbuddy setup" first.');
     process.exit(1);
   }
 
@@ -256,12 +294,15 @@ async function main() {
   const system = os.platform();
   const arch = os.arch();
 
+  const currentPath = process.cwd();
+
   const messages = [
     { role: 'system', content: getSystemPrompt(shell, system) },
     {
       role: 'user',
       content: `${helpContext ? `COMMAND DOCUMENTATION (use this first):\n${helpContext}\n\n---\n\n` : ''}USER REQUEST: ${userRequest}
 
+User current path: ${currentPath}
 Architecture: ${arch}`
     }
   ];
@@ -292,6 +333,9 @@ Architecture: ${arch}`
     result = result.trim();
     // Remove markdown code fences if present
     result = result.replace(/^```(?:zsh|bash|sh)?\n?/gm, '').replace(/\n?```$/gm, '');
+
+    // Save to history
+    saveToHistory(userRequest, result, currentPath);
 
     console.log(result);
   } catch (error) {

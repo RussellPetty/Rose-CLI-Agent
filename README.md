@@ -1,12 +1,13 @@
 # Terminal Buddy 👤
 
-**AI-powered terminal command assistant** - Just type `::` followed by your request and let AI generate the perfect command for you.
+**AI-powered terminal command assistant** - Type `::` to generate commands from natural language, or `:::` to browse your command history.
 
-> **Note**: Also available as `rose-cli` for backward compatibility. You can use `terminal-buddy`, `tb`, or `rose` commands interchangeably.
+> **Note**: Also available as `rose-cli` for backward compatibility. You can use `termbuddy`, `tb`, or `rose` commands interchangeably.
 
 ## ✨ Features
 
 - **Natural language to commands**: Type what you want in plain English
+- **Smart history**: Browse and filter past commands with `:::` (per-directory autocomplete)
 - **Context-aware**: Automatically fetches `--help` docs for mentioned commands
 - **Multi-provider**: Supports OpenAI, Anthropic (Claude), Google (Gemini), xAI (Grok), and Ollama (local models)
 - **Smart integration**: Seamlessly integrates with Zsh and Bash
@@ -25,14 +26,14 @@ Or:
 npm install -g rose-cli
 ```
 
-Both packages provide the same functionality with three command aliases: `terminal-buddy`, `tb`, and `rose`.
+Both packages provide the same functionality with three command aliases: `termbuddy`, `tb`, and `rose`.
 
 ## 📝 Setup
 
 Run the setup wizard:
 
 ```bash
-terminal-buddy setup
+termbuddy setup
 # or
 tb setup
 # or (legacy)
@@ -78,27 +79,51 @@ After setup, just type `::` followed by your request in your terminal:
 
 Press Enter to see the command, then press Enter again to execute it!
 
+### Command History (`:::`)
+
+Terminal Buddy remembers all commands generated in each directory. Access your history with `:::`:
+
+```bash
+:::
+# Shows all past commands generated in current directory (with fzf if installed)
+
+::: docker
+# Filters history for commands containing "docker"
+
+::: npm install
+# Filters for commands with "npm install"
+```
+
+**Interactive Selection:**
+- If **fzf** is installed: Browse commands with fuzzy search
+- Otherwise: Select from a numbered list
+
+History is stored per-directory, so you only see relevant commands for your current location.
+
 ### Direct CLI Usage
 
 You can also use Terminal Buddy directly:
 
 ```bash
-terminal-buddy list running docker containers
+termbuddy list running docker containers
 # Outputs: docker ps
 
 # Or use the shorthand:
 tb find python files
 
 # All commands work:
-terminal-buddy setup    # Run setup wizard
-tb update              # Update Terminal Buddy to latest version
-rose --help            # Show help (legacy command)
-tb --version           # Show version
+termbuddy setup    # Run setup wizard
+tb update          # Update Terminal Buddy to latest version
+rose --help        # Show help (legacy command)
+tb --version       # Show version
 ```
 
 ## 🔧 Configuration
 
-Terminal Buddy stores configuration in `~/.rose-config.json` and help docs in `~/.rose-help.md`.
+Terminal Buddy stores:
+- Configuration in `~/.rose-config.json`
+- Help docs in `~/.rose-help.md`
+- Command history in `~/.rose-history.json` (per-directory, last 500 commands)
 
 ### Supported AI Providers
 
@@ -126,9 +151,9 @@ All cloud providers support 1M+ token context windows for comprehensive help doc
 
 ## 📦 What's Included
 
-- `terminal-buddy` / `tb` / `rose` - Main CLI commands
-- `terminal-buddy setup` - Interactive setup wizard
-- `terminal-buddy update` - Self-updating command
+- `termbuddy` / `tb` / `rose` - Main CLI commands
+- `termbuddy setup` - Interactive setup wizard
+- `termbuddy update` - Self-updating command
 - Shell integration for `::` syntax (Zsh/Bash/Fish)
 
 ## 🤝 Contributing

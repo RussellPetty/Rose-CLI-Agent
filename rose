@@ -35,22 +35,25 @@ switch (command) {
 👤 Terminal Buddy - AI-powered terminal command assistant
 
 Usage:
-  terminal-buddy setup    Run initial setup (choose AI provider, enter API key)
-  terminal-buddy update   Update Terminal Buddy to the latest version
-  terminal-buddy <request> Generate a command from natural language
+  termbuddy setup         Run initial setup (choose AI provider, enter API key)
+  termbuddy update        Update Terminal Buddy to the latest version
+  termbuddy <request>     Generate a command from natural language
   tb setup                Shorthand command (same as above)
   tb <request>            Shorthand for command generation
 
-  Aliases: terminal-buddy, tb, rose (legacy)
+  Aliases: termbuddy, tb, rose (legacy)
 
   --version               Show version
   --help                  Show this help
 
 Terminal Integration:
-  Type :: followed by your request in your terminal, then press Enter.
+  Type :: followed by your request to generate commands with AI
   Example: :: update system packages
 
-  The command will appear in your terminal buffer - press Enter again to execute.
+  Type ::: to browse command history for the current directory
+  Example: ::: docker   (filters history for docker commands)
+
+  Commands appear in your terminal buffer - press Enter to execute.
 `);
     break;
 

@@ -4,7 +4,7 @@
   "description": "AI-powered terminal command assistant - just type :: and let AI generate commands for you",
   "main": "rose-generate.js",
   "bin": {
-    "terminal-buddy": "rose",
+    "termbuddy": "rose",
     "tb": "rose",
     "rose": "rose"
   },
@@ -13,6 +13,7 @@
     "rose-generate.js",
     "rose-setup.js",
     "rose-update.js",
+    "rose-history.js",
     "publish.sh",
     "README.md"
   ],

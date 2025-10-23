@@ -4,3 +4,4 @@ node_modules/
 .env
 .rose-config.json
 .rose-help.md
+.rose-history.json
