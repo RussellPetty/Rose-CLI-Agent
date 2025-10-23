@@ -121,12 +121,56 @@ async function main() {
         }
 
         console.log('\n📦 Installing Ollama...');
+        console.log('This may take a few minutes.\n');
         try {
-          // Install Ollama using the official installation script
-          await execAsync('curl -fsSL https://ollama.ai/install.sh | sh', {
-            stdio: 'inherit'
+          // Install Ollama using the official installation script with progress tracking
+          const installProcess = exec('curl -fsSL https://ollama.ai/install.sh | sh');
+
+          const installSteps = [
+            'Downloading',
+            'Installing',
+            'Configuring',
+            'Finalizing'
+          ];
+
+          let currentStep = 0;
+          let dots = 0;
+
+          // Show progress animation
+          const progressInterval = setInterval(() => {
+            dots = (dots + 1) % 4;
+            const dotsStr = '.'.repeat(dots) + ' '.repeat(3 - dots);
+            process.stdout.write(`\r${installSteps[currentStep]}${dotsStr}`);
+          }, 500);
+
+          installProcess.stdout.on('data', (data) => {
+            const output = data.toString().toLowerCase();
+            // Update step based on output keywords
+            if (output.includes('download')) currentStep = 0;
+            else if (output.includes('install')) currentStep = 1;
+            else if (output.includes('setting up') || output.includes('configur')) currentStep = 2;
+            else if (output.includes('done') || output.includes('complete')) currentStep = 3;
           });
-          console.log('\n✅ Ollama installed successfully!');
+
+          await new Promise((resolve, reject) => {
+            installProcess.on('exit', (code) => {
+              clearInterval(progressInterval);
+              process.stdout.write('\r' + ' '.repeat(50) + '\r'); // Clear progress line
+              if (code === 0) {
+                resolve();
+              } else {
+                reject(new Error(`Installation failed with code ${code}`));
+              }
+            });
+
+            installProcess.on('error', (error) => {
+              clearInterval(progressInterval);
+              process.stdout.write('\r' + ' '.repeat(50) + '\r');
+              reject(error);
+            });
+          });
+
+          console.log('✅ Ollama installed successfully!');
 
           // Start Ollama service
           console.log('🚀 Starting Ollama service...');
