@@ -395,7 +395,7 @@ function rose-command() {
         # Get history commands
         local history_commands
         if command -v node >/dev/null 2>&1; then
-            local rose_history_script="$(dirname "$(which rose 2>/dev/null || which tb 2>/dev/null)")/rose-history.js"
+            local rose_history_script="$(dirname "$(readlink -f "$(which rose 2>/dev/null || which tb 2>/dev/null)")")/rose-history.js"
 
             if [[ -f "$rose_history_script" ]]; then
                 if [[ -n "$filter" ]]; then
