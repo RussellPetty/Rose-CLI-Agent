@@ -52,8 +52,17 @@ function questionSecret(prompt) {
           }
           break;
         default:
+          // Handle pasting (multiple characters at once)
           hidden += char;
-          process.stdout.write(hidden.length <= 4 ? char : '*');
+          process.stdout.clearLine();
+          process.stdout.cursorTo(0);
+          process.stdout.write(prompt);
+          // Show only last 4 chars
+          if (hidden.length > 4) {
+            process.stdout.write('*'.repeat(hidden.length - 4) + hidden.slice(-4));
+          } else {
+            process.stdout.write(hidden);
+          }
           break;
       }
     };
@@ -168,10 +177,9 @@ async function main() {
   }
 
   if (shellConfigFile) {
-    const addIntegration = await question(`Add Rose integration to your ${shellName} config (${shellConfigFile})? (y/n): `);
+    console.log(`Adding Rose integration to ${shellConfigFile}...`);
 
-    if (addIntegration.toLowerCase() === 'y') {
-      const integration = `
+    const integration = `
 # Rose - AI terminal assistant integration
 function rose-command() {
     local text="$BUFFER"
@@ -203,44 +211,43 @@ zle -N rose-command
 bindkey '^M' rose-command  # Bind to Enter key
 `;
 
-      // Check if already added
-      let configUpdated = false;
-      if (fs.existsSync(shellConfigFile)) {
-        const currentConfig = fs.readFileSync(shellConfigFile, 'utf8');
-        if (currentConfig.includes('rose-command')) {
-          console.log('✓ Rose integration already exists in your shell config');
-        } else {
-          fs.appendFileSync(shellConfigFile, integration);
-          console.log(`✅ Rose integration added to ${shellConfigFile}`);
-          configUpdated = true;
-        }
+    // Check if already added
+    let configUpdated = false;
+    if (fs.existsSync(shellConfigFile)) {
+      const currentConfig = fs.readFileSync(shellConfigFile, 'utf8');
+      if (currentConfig.includes('rose-command')) {
+        console.log('✓ Rose integration already exists in your shell config');
       } else {
-        fs.writeFileSync(shellConfigFile, integration);
-        console.log(`✅ Created ${shellConfigFile} with Rose integration`);
+        fs.appendFileSync(shellConfigFile, integration);
+        console.log(`✅ Rose integration added to ${shellConfigFile}`);
         configUpdated = true;
       }
+    } else {
+      fs.writeFileSync(shellConfigFile, integration);
+      console.log(`✅ Created ${shellConfigFile} with Rose integration`);
+      configUpdated = true;
+    }
 
-      // Attempt to reload config
-      if (configUpdated) {
-        console.log('\n🔄 Reloading shell configuration...');
-        const reloadCmd = shell.includes('zsh')
-          ? `zsh -c "source ${shellConfigFile}"`
-          : shell.includes('bash')
-          ? `bash -c "source ${shellConfigFile}"`
-          : null;
+    // Attempt to reload config
+    if (configUpdated) {
+      console.log('\n🔄 Reloading shell configuration...');
+      const reloadCmd = shell.includes('zsh')
+        ? `zsh -c "source ${shellConfigFile}"`
+        : shell.includes('bash')
+        ? `bash -c "source ${shellConfigFile}"`
+        : null;
 
-        if (reloadCmd) {
-          try {
-            await execAsync(reloadCmd);
-            console.log('✅ Configuration reloaded!');
-            console.log('Rose is now active in your current shell.');
-          } catch (e) {
-            console.log(`⚠️  Couldn't auto-reload. Please run: source ${shellConfigFile}`);
-            console.log('   Or restart your terminal.');
-          }
-        } else {
-          console.log(`⚠️  Please restart your terminal to activate Rose.`);
+      if (reloadCmd) {
+        try {
+          await execAsync(reloadCmd);
+          console.log('✅ Configuration reloaded!');
+          console.log('Rose is now active in your current shell.');
+        } catch (e) {
+          console.log(`⚠️  Couldn't auto-reload. Please run: source ${shellConfigFile}`);
+          console.log('   Or restart your terminal.');
         }
+      } else {
+        console.log(`⚠️  Please restart your terminal to activate Rose.`);
       }
     }
   }
