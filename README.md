@@ -137,6 +137,34 @@ rose --help        # Show help (legacy command)
 tb --version       # Show version
 ```
 
+## 🔄 Updating
+
+To update Terminal Buddy to the latest version:
+
+```bash
+tb update
+# or
+termbuddy update
+```
+
+### Updating Shell Integration
+
+If you installed Terminal Buddy before v2.1.0, you won't have the `:::` history feature. To update your shell integration:
+
+**Option 1: Automatic (Recommended)**
+```bash
+termbuddy setup
+```
+It will detect your old integration and offer to update it automatically.
+
+**Option 2: Manual**
+```bash
+# Reload your shell configuration
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+After updating, restart your terminal or run `source ~/.zshrc` to enable new features.
+
 ## 🔧 Configuration
 
 Terminal Buddy stores:
@@ -174,6 +202,54 @@ All cloud providers support 1M+ token context windows for comprehensive help doc
 - `termbuddy setup` - Interactive setup wizard
 - `termbuddy update` - Self-updating command
 - Shell integration for `::` syntax (Zsh/Bash/Fish)
+
+## 🔍 Troubleshooting
+
+### `:::` History Feature Not Working
+
+If you type `:::` and it sends the request to AI instead of showing history:
+
+1. **Update to latest version:**
+   ```bash
+   npm update -g termbuddy
+   # or: yay -Syu termbuddy
+   ```
+
+2. **Update shell integration:**
+   ```bash
+   termbuddy setup
+   ```
+   Select "yes" when prompted to update your shell integration.
+
+3. **Reload your shell:**
+   ```bash
+   source ~/.zshrc  # or ~/.bashrc
+   # Or restart your terminal
+   ```
+
+### "History script not found" Error
+
+This means your npm installation is outdated. Update with:
+```bash
+npm update -g termbuddy
+```
+
+### Commands Not Generating
+
+- Check your API key: `cat ~/.rose-config.json`
+- Verify internet connection (unless using Ollama)
+- For Ollama: Ensure service is running with `ollama list`
+
+### Shell Integration Not Working
+
+If `::` doesn't trigger Terminal Buddy:
+```bash
+# Re-run setup
+termbuddy setup
+
+# Then reload shell
+source ~/.zshrc  # or ~/.bashrc
+```
 
 ## 🤝 Contributing
 
