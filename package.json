@@ -1,6 +1,6 @@
 {
   "name": "rose-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "AI-powered terminal command assistant - just type :: and let AI generate commands for you",
   "main": "rose-generate.js",
   "bin": {
