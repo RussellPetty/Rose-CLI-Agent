@@ -521,6 +521,38 @@ bindkey '^M' rose-command  # Bind to Enter key
       configUpdated = true;
     }
 
+    // Install lazypush feature
+    console.log('\n📦 Installing lazypush feature...');
+    try {
+      const roseBinPath = await execAsync('which rose 2>/dev/null || which tb 2>/dev/null');
+      const roseBinDir = path.dirname(roseBinPath.stdout.trim());
+      const lazypushSource = path.join(roseBinDir, 'lazypush.sh');
+
+      // Check if lazypush.sh exists in the installation
+      if (fs.existsSync(lazypushSource)) {
+        // Add lazypush sourcing to shell config
+        const lazypushIntegration = `\n# lazypush - AI-powered git commit and push\nif [ -f "${lazypushSource}" ]; then\n    source "${lazypushSource}"\nfi\n`;
+
+        const currentConfig = fs.existsSync(shellConfigFile) ? fs.readFileSync(shellConfigFile, 'utf8') : '';
+
+        if (!currentConfig.includes('lazypush.sh') && !currentConfig.includes('lazypush - AI-powered')) {
+          fs.appendFileSync(shellConfigFile, lazypushIntegration);
+          console.log('✅ lazypush feature installed');
+          console.log('   Usage:');
+          console.log('     lazypush      - Interactive file selection');
+          console.log('     lazypush .    - Auto-select all with confirmation');
+          console.log('     lazypush !    - Auto-push without confirmation');
+          configUpdated = true;
+        } else {
+          console.log('✓ lazypush already configured');
+        }
+      } else {
+        console.log('⚠️  lazypush.sh not found in installation, skipping');
+      }
+    } catch (e) {
+      console.log('⚠️  Could not install lazypush feature');
+    }
+
     // Attempt to reload config
     if (configUpdated) {
       console.log('\n🔄 Reloading shell configuration...');
@@ -550,7 +582,10 @@ bindkey '^M' rose-command  # Bind to Enter key
   console.log('  1. In your terminal, type :: followed by your request');
   console.log('  2. Press Enter and wait for the command to appear');
   console.log('  3. Press Enter again to execute\n');
-  console.log('Example: :: list docker containers\n');
+  console.log('Examples:');
+  console.log('  :: list docker containers');
+  console.log('  ::: filter              (search command history)');
+  console.log('  lazypush                (AI-powered git commit & push)\n');
 
   rl.close();
 }

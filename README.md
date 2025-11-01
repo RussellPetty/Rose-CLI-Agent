@@ -8,6 +8,7 @@
 
 - **Natural language to commands**: Type what you want in plain English
 - **Smart history**: Browse and filter past commands with `:::` (per-directory autocomplete)
+- **AI-powered git workflow**: `lazypush` - Interactive file selection, AI-generated commit messages, and automatic push
 - **Context-aware**: Automatically fetches `--help` docs for mentioned commands
 - **Multi-provider**: Supports OpenAI, Anthropic (Claude), Google (Gemini), xAI (Grok), and Ollama (local models)
 - **Smart integration**: Seamlessly integrates with Zsh and Bash
@@ -119,6 +120,37 @@ Terminal Buddy remembers all commands generated in each directory. Access your h
 
 History is stored per-directory, so you only see relevant commands for your current location.
 
+### AI-Powered Git Workflow (`lazypush`)
+
+Terminal Buddy includes `lazypush` - an intelligent git workflow tool that combines interactive file selection with AI-generated commit messages:
+
+```bash
+lazypush
+# Interactive mode:
+# 1. Shows all uncommitted files in fzf
+# 2. Press Space to select files to commit
+# 3. AI generates commit message from the diff
+# 4. Review and confirm before pushing
+
+lazypush .
+# Auto-select all files, but still confirm before pushing
+
+lazypush !
+# Auto-select all and push immediately (no confirmation)
+```
+
+**Features:**
+- **Interactive file selection** with fzf (multi-select with Space)
+- **AI-generated commit messages** using your configured AI provider
+- **Live diff preview** while selecting files
+- **Auto git init** if repository not initialized
+- **Smart upstream handling** for first-time pushes
+- **Three modes** for different workflows (interactive, semi-auto, full-auto)
+
+**Requirements:**
+- `fzf` for interactive mode (install via `brew install fzf` or your package manager)
+- Auto-installed during Terminal Buddy setup
+
 ### Direct CLI Usage
 
 You can also use Terminal Buddy directly:
@@ -201,7 +233,8 @@ All cloud providers support 1M+ token context windows for comprehensive help doc
 - `termbuddy` / `tb` / `rose` - Main CLI commands
 - `termbuddy setup` - Interactive setup wizard
 - `termbuddy update` - Self-updating command
-- Shell integration for `::` syntax (Zsh/Bash/Fish)
+- `lazypush` - AI-powered git commit and push workflow
+- Shell integration for `::` and `:::` syntax (Zsh/Bash/Fish)
 
 ## 🔍 Troubleshooting
 

@@ -14,6 +14,7 @@
     "rose-setup.js",
     "rose-update.js",
     "rose-history.js",
+    "lazypush.sh",
     "publish.sh",
     "README.md"
   ],
